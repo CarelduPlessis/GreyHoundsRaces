@@ -196,11 +196,11 @@ namespace GreyHoundsRaces
 
             // reset values
             NUpDwnAmountBet.Value = 45;
-            chbxALLIN.Checked = false;
             btnPlaceBet.Enabled = false;
             NUpDwnAmountBet.Enabled = false;
             cmbbxBETONDOG.Enabled = false;
             chbxALLIN.Enabled = false;
+
             rbtnPunterJoe.Checked = false;
             rbtnPunterCarel.Checked = false;
             rbtnPunterAI.Checked = false;
@@ -247,9 +247,10 @@ namespace GreyHoundsRaces
                     }
                 }
             }
-          
+            Debug.WriteLine(Winners.Count);
             for (int k = 0; k < dog.Length; k++) {
                 // Check if one of the Dogs Won, if not its a draw
+                
                 if (Winners.Count == 1 && Winners[0].DogName == punter[k].Dog.DogName)
                 { // increase Money 
                     if (punter[k].Busted == false) {
@@ -261,6 +262,7 @@ namespace GreyHoundsRaces
                             + " Hound Name " + punter[k].Dog.DogName;
                     }
                 } else if (Winners.Count == 2) {
+                    
                     if (Winners[0].DogPicture.Location.X > Winners[1].DogPicture.Location.X)
                     {
                         if (punter[k].Busted == false) {
@@ -363,6 +365,8 @@ namespace GreyHoundsRaces
             chbxCarelChangeBet.Checked = false;
             chbxAIChangeBet.Checked = false;
 
+            
+
             // Check if all three Plunters are busted 
             if (numBusted == 3)
             {
@@ -374,11 +378,14 @@ namespace GreyHoundsRaces
                 rbtnPunterCarel.Enabled = false;
                 rbtnPunterJoe.Enabled = false;
                 numBusted = 0;
-                MessageBox.Show("Hello World", "Game Over");
+                MessageBox.Show("All punters can't continue beting", "Game Over");
             }
             else
             {
                 numBusted = 0;
+                rbtnPunterAI.Enabled = true;
+                rbtnPunterCarel.Enabled = true;
+                rbtnPunterJoe.Enabled = true;
             }
         }
       
