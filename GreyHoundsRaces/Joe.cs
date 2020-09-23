@@ -19,9 +19,10 @@ namespace GreyHoundsRaces
         public override Label LBLMaxBet { get; set; }
         public override Label LBLMinBet { get; set; }
         public override RadioButton MyRadioButton { get; set; }
+        public override CheckBox ChangeBet { get; set; }
 
         public Joe(string name, double cash, bool busted, double bet, 
-            GreyHound dog, string winningdog, TextBox displayresults, Label lblmaxbet, Label lblminbet, RadioButton radiobutton) {
+            GreyHound dog, string winningdog, TextBox displayresults, Label lblmaxbet, Label lblminbet, RadioButton radiobutton, CheckBox changebet) {
             PunterName = name;
             Cash = cash;
             Busted = busted;
@@ -32,6 +33,7 @@ namespace GreyHoundsRaces
             LBLMaxBet = lblmaxbet;
             LBLMinBet = lblminbet;
             MyRadioButton = radiobutton;
+            ChangeBet = changebet;
         }
     }
 }

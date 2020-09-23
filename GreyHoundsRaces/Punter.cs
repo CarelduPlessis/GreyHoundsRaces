@@ -21,5 +21,6 @@ namespace GreyHoundsRaces
         public abstract System.Windows.Forms.Label LBLMaxBet { get; set; }
         public abstract System.Windows.Forms.Label LBLMinBet { get; set; }
         public abstract RadioButton MyRadioButton { get; set; }
+        public abstract CheckBox ChangeBet { get; set; }
     }
 }
