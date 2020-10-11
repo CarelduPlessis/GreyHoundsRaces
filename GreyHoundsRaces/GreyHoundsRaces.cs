@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Deployment.Application;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -14,14 +9,20 @@ namespace GreyHoundsRaces
 {
     public partial class GreyHoundsRaces : Form
     {
-        // declare array of classes with the size of 3
+        #region Declare Variables, Arrays And Classes
+        // Declare array of classes with the size of 3
         Punter[] Punter = new Punter[3];
         GreyHound[] Dog = new GreyHound[3];
+        FindWinner FindWinner;
+        HashSet<GreyHound> getWinners;
+        #endregion
+
         public GreyHoundsRaces()
         {
             InitializeComponent();
         }
 
+        #region Initializing Varaibles And Classes
         private void GreyHoundsRaces_Load(object sender, EventArgs e)
         {
 
@@ -48,8 +49,13 @@ namespace GreyHoundsRaces
             {
                 Punter[i].DisplayResults.Text = Punter[i].PunterName + " available cash is " + Punter[i].Cash;
             }
-        }
 
+            getWinners = new HashSet<GreyHound>();
+            FindWinner = new FindWinner(getWinners.ToList(), Punter.ToList(), Dog.ToList());
+        }
+        #endregion
+
+        #region Check if punters is beting 
         // Check if this punter is beting 
         private void rbtnPunterJoe_CheckedChanged(object sender, EventArgs e)
         {
@@ -82,7 +88,9 @@ namespace GreyHoundsRaces
                 NUpDwnAmountBet.Enabled = true;
             }
         }
+        #endregion
 
+        #region Set Bet Amount
         private void NUpDwnAmountBet_ValueChanged(object sender, EventArgs e)
         {
 
@@ -90,7 +98,6 @@ namespace GreyHoundsRaces
             {
                 if (Punter[i].MyRadioButton.Checked == true)
                 {
-
                     // make sure the punter bets between the minbet and maxbet 
                     if (NUpDwnAmountBet.Value >= Convert.ToInt32(Punter[i].LBLMinBet.Text)
                                     && NUpDwnAmountBet.Value <= Convert.ToInt32(Punter[i].LBLMaxBet.Text))
@@ -114,12 +121,14 @@ namespace GreyHoundsRaces
                 }
             }
         }
-
+        
         private void chbxALLIN_CheckedChanged_1(object sender, EventArgs e)
         {
             cmbbxBETONDOG.Enabled = true;
         }
+        #endregion
 
+        #region Select Dog to Bet On
         string[] findDogIndex = { "Speedy Pebbles", "To Hot To Handle", "Speeding Bullet" };
         private void cmbbxBETONDOG_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -133,36 +142,12 @@ namespace GreyHoundsRaces
             }
             btnPlaceBet.Enabled = true;
         }
+        #endregion
 
+        #region Place Bet Button
         int countbtnClicks = 0;
         private void btnPlaceBet_Click(object sender, EventArgs e)
         {
-            /*
-            if (Punter[0].Busted == true)
-            {
-                chbxCarelChangeBet.Enabled = false;
-            }else {
-                chbxCarelChangeBet.Enabled = true;
-                chbxCarelChangeBet.Checked = false;
-            }
-            
-            if (Punter[1].Busted == true)
-            {
-                chbxAIChangeBet.Enabled = false;
-            } else{
-                chbxAIChangeBet.Enabled = true;
-                chbxAIChangeBet.Checked = false;
-            }
-           
-            if (Punter[2].Busted == true)
-            {
-                chbxJoeChangeBet.Enabled = false;
-            } else{
-                chbxJoeChangeBet.Enabled = true;
-                chbxJoeChangeBet.Checked = false;
-            }
-            */
-
             for (int i = 0; i < Punter.Length; i++) {
                 if (Punter[i].Busted == true)
                 {
@@ -215,22 +200,26 @@ namespace GreyHoundsRaces
             btnPlaceBet.Enabled = false;
             NUpDwnAmountBet.Enabled = false;
             cmbbxBETONDOG.Enabled = false;
+            cmbbxBETONDOG.Text = "";
+            chbxALLIN.Checked = false;
             chbxALLIN.Enabled = false;
 
             rbtnPunterJoe.Checked = false;
             rbtnPunterCarel.Checked = false;
             rbtnPunterAI.Checked = false;
-
         }
+        #endregion
 
+        #region Start Race
         // declare variables 
         int numBusted = 0;
         bool isRaceOver = false;
         int[] indexNotBusted = new int[3];
-        List<GreyHound> Winners = new List<GreyHound>();
         private async void btnRace_Click(object sender, EventArgs e)
         {
-            int[] distances = new int[Dog.Length];
+            //int[] distances = new int[Dog.Length];
+
+            int Maxdistance = 0;
 
             chbxCarelChangeBet.Enabled = false;
             chbxJoeChangeBet.Enabled = false;
@@ -238,6 +227,7 @@ namespace GreyHoundsRaces
 
             btnRace.Enabled = false;
 
+            #region Check if Race is over
             //Continue the race as long as the race is not over
             while (isRaceOver == false)
             {
@@ -247,7 +237,6 @@ namespace GreyHoundsRaces
                     if (Dog[i].DogPicture.Location.X < pbxFinishLine.Location.X)
                     {
                         Dog[i].Move(FactoryPunter.DogSpeed.Next(10, 32));
-                        //findMax[i] = dog[i].DogPicture.Location.X;
                         await Task.Delay((int)NUpDwnGameSpeed.Value); // minvalue 20 - 2000 maxvalue of delay time
                     }
                     else
@@ -256,129 +245,28 @@ namespace GreyHoundsRaces
                         
                         for (int j = 0; j < Dog.Length; j++)
                         {
-                            distances[j] = Dog[j].DogPicture.Location.X;
+                            if (Dog[j].DogPicture.Location.X  > Maxdistance) { 
+                                Maxdistance = Dog[j].DogPicture.Location.X;
+                            }
                         }
                         for (int j = 0; j < Dog.Length; j++)
                         {
-                            if (Dog[j].DogPicture.Location.X == distances.Max())
+                            if (Dog[j].DogPicture.Location.X == Maxdistance)
                             {
-                                Winners.Add(Dog[j]);
-                                Debug.WriteLine("distances " + distances[j]);
+                                getWinners.Add(Dog[j]);
+                                Debug.WriteLine("distances " + Maxdistance);
                             }
                         }
                     }
                 }
             }
-            Debug.WriteLine(Winners.Count);
-            string displayWinnerDog = "";
-            for (int k = 0; k < Dog.Length; k++) {
-                // Check if one of the Dogs Won, if not its a draw
-                
-                if (Winners.Count == 1 && Winners[0].DogName == Punter[k].Dog.DogName)
-                { // increase Money 
-                    if (Punter[k].Busted == false) {
-                        displayWinnerDog = Punter[k].Dog.DogName;
-                        //Punter[k].Cash = Punter[k].Cash + Punter[k].MyBet;
-                        //Punter[k].DisplayResults.Text = Punter[k].PunterName + " Won and Now has $"
-                        //    + Punter[k].Cash + ". Hound Name " + Punter[k].Dog.DogName;
-                        WonRace(k);
-                    } else {
-                        displayWinnerDog = Punter[k].Dog.DogName;
-                        //Punter[k].DisplayResults.Text = Punter[k].PunterName + "Won but stays Busted! "
-                        //    + " Hound Name " + Punter[k].Dog.DogName;
-                        WonStayBusted(k);
-                    }
-                } else if (Winners.Count == 2) {
-                    if (Winners[0].DogPicture.Location.X > Winners[1].DogPicture.Location.X)
-                    {
-                        if (Punter[k].Busted == false) {
-                            displayWinnerDog = Punter[k].Dog.DogName;
-                            //Punter[k].Cash = Punter[k].Cash + Punter[k].MyBet;
-                            //Punter[k].DisplayResults.Text = Punter[k].PunterName + " Won and Now has $"
-                            //    + Punter[k].Cash + ". Hound Name " + Punter[k].Dog.DogName;
-                            WonRace(k);
-                        } else {
-                            displayWinnerDog = Punter[k].Dog.DogName;
-                            //Punter[k].DisplayResults.Text = Punter[k].PunterName + "Won but stays Busted! "
-                            //    + " Hound Name " + Punter[k].Dog.DogName;
-                            WonStayBusted(k);
-                        }
-                    } else if (Winners[0].DogPicture.Location.X < Winners[1].DogPicture.Location.X){
-                        displayWinnerDog = Punter[k].Dog.DogName;
-                        //Punter[k].Cash = Punter[k].Cash + Punter[k].MyBet;
-                        //Punter[k].DisplayResults.Text = Punter[k].PunterName + " Won and Now has $"
-                        //    + Punter[k].Cash + ". Hound Name " + Punter[k].Dog.DogName;
-                        WonRace(k);
-                    }
-                    else if (Winners[0].DogPicture.Location.X == Winners[1].DogPicture.Location.X) {
-                        Random flipACoined = new Random();
-                        Debug.WriteLine("flipACoined");
-                        Debug.WriteLine(Winners[0].DogName);
-                        Debug.WriteLine(Winners[1].DogName);
-                        if (Winners[flipACoined.Next(0, 2)].DogName == Punter[k].Dog.DogName)
-                        {
-                            if (Punter[k].Busted == false)
-                            {
-                                displayWinnerDog = Punter[k].Dog.DogName;
-                                //Punter[k].Cash = Punter[k].Cash + Punter[k].MyBet;
-                                //Punter[k].DisplayResults.Text = Punter[k].PunterName + " Won and Now has $"
-                                //    + Punter[k].Cash + ". Hound Name " + Punter[k].Dog.DogName;
-                                WonRace(k);
-                            } else{
-                                displayWinnerDog = Punter[k].Dog.DogName;
-                                //Punter[k].DisplayResults.Text = Punter[k].PunterName + "Won but stays Busted! "
-                                //    + " Hound Name " + Punter[k].Dog.DogName;
-                                WonStayBusted(k);
-                            }
-                        }else {
-                            if (Punter[k].Busted == false){
-                                //Punter[k].Cash = Punter[k].Cash - Punter[k].MyBet;
-                                //Punter[k].DisplayResults.Text = Punter[k].PunterName + " Lost and Now has $"
-                                //    + Punter[k].Cash + ". Hound Name " + Punter[k].Dog.DogName;
-                                LostRace(k);
-                            }
-                            else{
-                                //Punter[k].DisplayResults.Text = Punter[k].PunterName + " Lost and stays Busted! "
-                                //    + " Hound Name " + Punter[k].Dog.DogName;
-                                LostStayBusted(k);
-                            }
-                        }
-                    }
-                } else if (Winners.Count >= 3){
-                    for (int j = 0; j < Dog.Length; j++)
-                    {
-                        //Punter[j].DisplayResults.Text = "This race doesn't count becuase its a draw.";
-                        Draw(j);
-                    }
-                } else if(Winners[0].DogName != Punter[k].Dog.DogName){
-                    if (Punter[k].Busted == false){
-                        //Punter[k].Cash = Punter[k].Cash - Punter[k].MyBet;
+            #endregion
 
-                        //Punter[k].DisplayResults.Text = Punter[k].PunterName + " Lost and Now has $"
-                        //    + Punter[k].Cash + ". Hound Name " + Punter[k].Dog.DogName;
-                        LostRace(k);
-                    } else {
-                        //Punter[k].DisplayResults.Text = Punter[k].PunterName + " Lost and stays Busted! "
-                        //    + " Hound Name " + Punter[k].Dog.DogName;
-                        LostStayBusted(k);
-                    }
-                }
-            }
+            FindWinner.Punter = Punter.ToList();
+            FindWinner.ListOfWinner = getWinners.ToList();
+            FindWinner.LookForWinner();
 
-            if (displayWinnerDog != "") // punters winning dog  else house wins
-            { 
-                MessageBox.Show("Winning Dog is: " + displayWinnerDog);
-            }else if (displayWinnerDog == "" && Winners.Count == 1){
-                MessageBox.Show("Winning Dog is: " + Winners[0].DogName);
-            } else if (displayWinnerDog == "" && Winners.Count == 2 & Winners[0].DogName != Winners[1].DogName) {
-                MessageBox.Show("Winning Dogs are: " + Winners[0].DogName + " , "  + Winners[1].DogName);
-            } else if (displayWinnerDog == "" && Winners.Count == 2 & Winners[0].DogName == Winners[1].DogName)
-            {
-                MessageBox.Show("Winning Dog is: " + Winners[0].DogName);
-            }
-
-            Winners.Clear();
-
+            #region Check if Punters are Busted and reset race (if game is not over)
             // Count Number of Plunters that are Busted
             for (int i = 0; i < Punter.Length; i++)
             {
@@ -398,26 +286,8 @@ namespace GreyHoundsRaces
                 else
                 {
                     indexNotBusted[i] = i;
-                    /*
-                    if (Punter[i].PunterName == "Carel") {
-                        rbtnPunterCarel.Enabled = true;
-                        chbxCarelChangeBet.Enabled = true;
-                    }
-                    if (Punter[i].PunterName == "Joe")
-                    {
-                        rbtnPunterJoe.Enabled = true;
-                        chbxJoeChangeBet.Enabled = true;
-                    }
-                    if (Punter[i].PunterName == "AI")
-                    {
-                        rbtnPunterAI.Enabled = true;
-                        chbxAIChangeBet.Enabled = true;
-                    }*/
-
                     Punter[i].MyRadioButton.Enabled = true;
                     Punter[i].ChangeBet.Enabled = true;
-
-
                 }
                 Punter[i].WinningDog = "";
             }
@@ -454,8 +324,12 @@ namespace GreyHoundsRaces
                 // reset values and continue the game
                 numBusted = 0;
             }
+            #endregion
+
         }
-      
+        #endregion
+
+        #region Change Bet 
         private void chbxJoeChangeBet_CheckedChanged(object sender, EventArgs e)
         {
             if (chbxJoeChangeBet.Checked == true && countbtnClicks >= numBusted) {
@@ -496,33 +370,6 @@ namespace GreyHoundsRaces
                 Debug.WriteLine("Count bets placed: " + countbtnClicks);
             }
         }
-
-        public void WonRace(int k)
-        {
-            Punter[k].Cash = Punter[k].Cash + Punter[k].MyBet;
-            Punter[k].DisplayResults.Text = Punter[k].PunterName + " Won and Now has $"
-                + Punter[k].Cash + ". Hound Name " + Punter[k].Dog.DogName;
-        }
-        public void LostRace(int k)
-        {
-            Punter[k].Cash = Punter[k].Cash - Punter[k].MyBet;
-
-            Punter[k].DisplayResults.Text = Punter[k].PunterName + " Lost and Now has $"
-                + Punter[k].Cash + ". Hound Name " + Punter[k].Dog.DogName;
-        }
-        
-        public void Draw(int j)
-        {
-            Punter[j].DisplayResults.Text = "This race doesn't count becuase its a draw.";
-        }
-        public void LostStayBusted(int k) {
-            Punter[k].DisplayResults.Text = Punter[k].PunterName + " Lost and stays Busted! "
-                           + " Hound Name " + Punter[k].Dog.DogName;
-        }
-        public void WonStayBusted(int k)
-        {
-            Punter[k].DisplayResults.Text = Punter[k].PunterName + "Won but stays Busted! "
-                + " Hound Name " + Punter[k].Dog.DogName;
-        }
+        #endregion
     }
 }

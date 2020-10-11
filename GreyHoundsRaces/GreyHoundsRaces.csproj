@@ -50,6 +50,7 @@
     <Compile Include="Bet.cs" />
     <Compile Include="Carel.cs" />
     <Compile Include="FactoryPunter.cs" />
+    <Compile Include="FindWinner.cs" />
     <Compile Include="GreyHound.cs" />
     <Compile Include="GreyHoundsRaces.cs">
       <SubType>Form</SubType>

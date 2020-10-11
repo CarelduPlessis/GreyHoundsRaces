@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 
 namespace GreyHoundsRaces
@@ -18,8 +12,8 @@ namespace GreyHoundsRaces
         public abstract GreyHound Dog { get; set; }
         public abstract string WinningDog { get; set; }
         public abstract TextBox DisplayResults { get; set; }
-        public abstract System.Windows.Forms.Label LBLMaxBet { get; set; }
-        public abstract System.Windows.Forms.Label LBLMinBet { get; set; }
+        public abstract Label LBLMaxBet { get; set; }
+        public abstract Label LBLMinBet { get; set; }
         public abstract RadioButton MyRadioButton { get; set; }
         public abstract CheckBox ChangeBet { get; set; }
     }

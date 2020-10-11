@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace GreyHoundsRaces
 {
@@ -21,6 +16,11 @@ namespace GreyHoundsRaces
         public override RadioButton MyRadioButton { get; set; }
 
         public override CheckBox ChangeBet { get; set; }
+
+        public Carel()
+        {
+            PunterName = "Carel";
+        }
 
         public Carel(string name, double cash, bool busted, double bet,
             GreyHound dog, string winningdog, TextBox displayresults, Label lblmaxbet, Label lblminbet, RadioButton radiobutton, CheckBox changebet)

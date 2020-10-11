@@ -1,7 +1,6 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using GreyHoundsRaces;
-using System.Windows.Forms;
+
 
 namespace TestingGreyHoundsRacesGame
 {
@@ -15,12 +14,11 @@ namespace TestingGreyHoundsRacesGame
         {
             GreyHound[] dog = new GreyHound[3];
 
-            FactoryPunter.CreatePunter("Carel", 200, false, 45, dog[0], "", null, null, null, null);
-            FactoryPunter.CreatePunter("AI", 200, false, 45, dog[1], "", null, null, null, null);
-            FactoryPunter.CreatePunter("Joe", 200, false, 45, dog[2], "", null, null, null, null);
+            FactoryPunter.CreatePunter("Carel", 200, false, 45, dog[0], "", null, null, null, null, null);
+            FactoryPunter.CreatePunter("AI", 200, false, 45, dog[1], "", null, null, null, null, null);
+            FactoryPunter.CreatePunter("Joe", 200, false, 45, dog[2], "", null, null, null, null, null);
 
             Assert.AreEqual(3,FactoryPunter.count);
-
         }
 
 
@@ -31,7 +29,7 @@ namespace TestingGreyHoundsRacesGame
             Punter[] punter = new Punter[3];
             GreyHound[] dog = new GreyHound[3];
 
-            punter[0] = FactoryPunter.CreatePunter("Carel", 200, false, 45, dog[0], "", null, null, null, null);
+            punter[0] = FactoryPunter.CreatePunter("Carel", 200, false, 45, dog[0], "", null, null, null, null, null);
            
             Assert.AreEqual("Carel", punter[0].PunterName);
             /*
